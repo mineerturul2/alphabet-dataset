@@ -228,7 +228,6 @@ class ShapeDataset(Dataset):
         return x, y + 1
 
     def decode_params(self, params):
-        params = params - 1
         """
         Decode parameters into a more readable format.
 
@@ -238,6 +237,7 @@ class ShapeDataset(Dataset):
         Returns:
             dict: Dictionary with decoded parameters.
         """
+        params = params - 1
         # Get background color
         bg_color = [int(c) for c in params[0:3].tolist()]
 
@@ -329,6 +329,33 @@ class ShapeDataset(Dataset):
         )
         plt.tight_layout()
         plt.show()
+
+    def get_caption(self, idx):
+        """
+        Generate a human-readable text caption describing the image at the given index.
+
+        Args:
+            idx (int): Index of the sample.
+
+        Returns:
+            str: A natural language caption describing the image content.
+        """
+        params = self.parameters[idx]
+        decoded = self.decode_params(params.clone().long() + 1)
+        bg = decoded["background_color"]
+        shapes = decoded["shapes"]
+        if self.nocolor:
+            bg_desc = "white"
+        else:
+            bg_desc = f"RGB({bg[0]}, {bg[1]}, {bg[2]})"
+        shape_descs = []
+        for s in shapes:
+            color = s["color"]
+            shape_descs.append(
+                f"a {color[0]},{color[1]},{color[2]} colored letter '{s['shape']}'"
+            )
+        caption = f"A {bg_desc} background with {', '.join(shape_descs)}."
+        return caption
 
 
 # Example usage

@@ -2,7 +2,7 @@
 CLI entry point for SynthT2I.
 
 Usage:
-    python -m syntht2i [--index N] [--length L] [--image-size N] [--max-shapes N] [--seed N] [--no-color]
+    python -m syntht2i [--index N] [--length L] [--image-size N] [--max-shapes N] [--seed N] [--granularity N] [--no-color]
 """
 
 import argparse
@@ -31,6 +31,9 @@ def main():
         "--seed", type=int, default=42, help="Random seed for reproducibility (default: 42)"
     )
     parser.add_argument(
+        "--granularity", type=int, default=8, help="Granularity for quantizing parameters (default: 8)"
+    )
+    parser.add_argument(
         "--no-color", action="store_true", help="Use white background (no color)"
     )
 
@@ -42,6 +45,7 @@ def main():
         max_shapes=args.max_shapes,
         seed=args.seed,
         nocolor=args.no_color,
+        granularity=args.granularity,
     )
 
     try:

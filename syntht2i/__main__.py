@@ -2,7 +2,7 @@
 CLI entry point for SynthT2I.
 
 Usage:
-    python -m syntht2i [--index N] [--length L] [--image-size N] [--max-shapes N] [--seed N] [--granularity N] [--no-color]
+    python -m syntht2i [--index N] [--count N] [--length L] [--image-size N] [--max-shapes N] [--seed N] [--granularity N] [--no-color]
 """
 
 import argparse
@@ -17,6 +17,9 @@ def main():
     )
     parser.add_argument(
         "--index", type=int, default=0, help="Sample index to inspect (default: 0)"
+    )
+    parser.add_argument(
+        "--count", "-n", type=int, default=1, help="Number of consecutive captions to print starting at --index (default: 1)"
     )
     parser.add_argument(
         "--length", type=int, default=100, help="Number of samples in the dataset (default: 100)"
@@ -48,13 +51,13 @@ def main():
         granularity=args.granularity,
     )
 
-    try:
-        caption = dataset.get_caption(args.index)
-    except (IndexError, ValueError) as e:
-        print(f"Error: {e}", file=sys.stderr)
-        sys.exit(1)
-
-    print(caption)
+    for i in range(args.index, args.index + args.count):
+        try:
+            caption = dataset.get_caption(i)
+        except (IndexError, ValueError) as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+        print(caption)
 
 
 if __name__ == "__main__":
